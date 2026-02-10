@@ -1,0 +1,34 @@
+{
+    "contract": {
+        "ID No": "string, required, length: 10",
+        "title": "string, required, length: 255",
+        "description": "string, nullable, length: 1000",
+        "program_ammount": "decimal, nullable, precision: 15, scale: 2",
+        "approved_budget": "decimal, required, precision: 15, scale: 2",
+        "contract_cost": "decimal, nullable, precision: 15, scale: 2",
+        "contractor": "string, nullable, length: 100",
+        "pre_bid_date": "date, nullable",
+        "opening_of_bids_date": "date, nullable",
+        "start_of_posting_date": "date, nullable",
+        "end_of_posting_date": "date, nullable",
+        "contract_start_date": "date, nullable",
+        "contract_end_date": "date, nullable",
+        "completion_date": "date, nullable",
+        "project_engineer": "string, nullable, length: 100",
+        "project_inspector": "string, nullable, length: 100",
+        "remarks": "string, nullable, length: 255",
+        "re_advertised": "boolean, required, default: false",
+        "status": "decimal, required, precision: 1, scale: 0, default: 0"
+    },
+    "engineer": {
+        "first_name": "string, required, length: 50",
+        "last_name": "string, required, length: 50",
+        "middle_initial": "string, nullable, length: 50",
+        "email": "string, nullable, length: 255",
+        "phone_number": "string, nullable, length: 20"
+    },
+    "project_status": {
+        "status_name": "string, required, length: 50",
+        "description": "string, nullable, length: 255"
+    }
+}
