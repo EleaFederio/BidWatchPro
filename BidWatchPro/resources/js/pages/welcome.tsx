@@ -1,4 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
+import { Button } from '@mui/material';
 import { dashboard, login, register } from '@/routes';
 import type { SharedData } from '@/types';
 
@@ -49,7 +50,10 @@ export default function Welcome({
                     </nav>
                 </header>
                 <div className="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-                    <h1 className="text-9xl font-bold text-white">BidWatch Pro</h1>
+                    <div className="flex flex-col items-center gap-6">
+                        <h1 className="text-9xl font-bold text-black dark:text-white">BidWatch Pro</h1>
+                        <Button variant="contained" color="primary">Get Started</Button>
+                    </div>
                 </div>
                 <div className="hidden h-14.5 lg:block"></div>
             </div>

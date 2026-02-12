@@ -4,6 +4,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import '../css/app.css';
 import { initializeTheme } from './hooks/use-appearance';
+import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -17,9 +18,19 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
+        const prefersDark = document.documentElement.classList.contains('dark');
+        const theme = createTheme({
+            palette: {
+                mode: prefersDark ? 'dark' : 'light',
+            },
+        });
+
         root.render(
             <StrictMode>
-                <App {...props} />
+                <ThemeProvider theme={theme}>
+                    <CssBaseline />
+                    <App {...props} />
+                </ThemeProvider>
             </StrictMode>,
         );
     },

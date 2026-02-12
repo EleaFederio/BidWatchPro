@@ -17,8 +17,8 @@ return new class extends Migration
             $table->decimal('approved_budget', 15, 2);
             $table->decimal('contract_cost', 15, 2)->nullable();
             $table->string('contractor', 100)->nullable();
-            $table->date('pre_bid_date')->nullable();
-            $table->date('opening_of_bids_date')->nullable();
+            $table->dateTime('pre_bid_date')->nullable();
+            $table->dateTime('opening_of_bids_date')->nullable();
             $table->date('start_of_posting_date')->nullable();
             $table->date('end_of_posting_date')->nullable();
             $table->date('contract_start_date')->nullable();
