@@ -12,9 +12,22 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Contracts() {
-    function handleCreate(form: { title: string; client: string; amount: string }) {
-        // TODO: replace with Inertia.post to create contract
-        console.log('Create contract', form);
+    function handleCreate(form: any) {
+        // submit to backend to persist contract (including pre_bid_date)
+        // keeps existing behavior of using Inertia when available
+        // form is expected to include `pre_bid_date` as ISO string or empty
+        // and `pre_bid_none` when user selected None
+        // remove pre_bid_none before sending if true to leave database null
+        const payload = { ...form };
+        if (payload.pre_bid_none) {
+            payload.pre_bid_date = null;
+            delete payload.pre_bid_none;
+        }
+
+        // post to contracts endpoint
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const { Inertia } = require('@inertiajs/inertia');
+        Inertia.post('/contracts', payload);
     }
 
     return (

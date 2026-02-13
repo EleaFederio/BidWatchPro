@@ -27,6 +27,9 @@ return new class extends Migration
             $table->string('project_engineer', 100)->nullable();
             $table->string('project_inspector', 100)->nullable();
             $table->string('remarks', 255)->nullable();
+            $table->string('location')->nullable();
+            $table->string('source_of_fund')->nullable();
+            $table->unsignedSmallInteger('duration')->nullable();
             $table->boolean('re_advertised')->default(false);
             $table->decimal('status', 1, 0)->default(0);
             $table->timestamps();

@@ -12,22 +12,12 @@ type ContractForm = {
     id_no: string;
     title: string;
     description?: string;
-    program_ammount?: string;
     approved_budget: string;
-    contract_cost?: string;
-    contractor?: string;
     pre_bid_date?: string;
     opening_of_bids_date?: string;
     start_of_posting_date?: string;
     end_of_posting_date?: string;
-    contract_start_date?: string;
-    contract_end_date?: string;
-    completion_date?: string;
-    project_engineer?: string;
-    project_inspector?: string;
-    remarks?: string;
-    re_advertised: boolean;
-    status: number;
+    pre_bid_none?: boolean;
 };
 
 type Props = {
@@ -40,22 +30,12 @@ export default function AddNewContractModalComponent({ onCreate }: Props) {
         id_no: '',
         title: '',
         description: '',
-        program_ammount: '',
         approved_budget: '',
-        contract_cost: '',
-        contractor: '',
+        pre_bid_none: false,
         pre_bid_date: '',
         opening_of_bids_date: '',
         start_of_posting_date: '',
         end_of_posting_date: '',
-        contract_start_date: '',
-        contract_end_date: '',
-        completion_date: '',
-        project_engineer: '',
-        project_inspector: '',
-        remarks: '',
-        re_advertised: false,
-        status: 0,
     });
 
     // Dayjs states for DateTimePicker (null when empty)
@@ -109,6 +89,7 @@ export default function AddNewContractModalComponent({ onCreate }: Props) {
     }
 
     function handlePreBidDateChange(value: Dayjs | null) {
+        if (form.pre_bid_none) return;
         setPreBidDate(value);
         setForm((f) => ({ ...f, pre_bid_date: value ? value.toISOString() : '' } as any));
     }
@@ -125,11 +106,6 @@ export default function AddNewContractModalComponent({ onCreate }: Props) {
         if (f.title && f.title.length > 255) errs.title = 'Title must be at most 255 characters.';
         if (f.description && f.description.length > 1000) errs.description = 'Description must be at most 1000 characters.';
         if (!f.approved_budget || isNaN(Number(f.approved_budget))) errs.approved_budget = 'Approved budget is required and must be a number.';
-        if (f.contractor && f.contractor.length > 100) errs.contractor = 'Contractor must be at most 100 characters.';
-        if (f.project_engineer && f.project_engineer.length > 100) errs.project_engineer = 'Project engineer must be at most 100 characters.';
-        if (f.project_inspector && f.project_inspector.length > 100) errs.project_inspector = 'Project inspector must be at most 100 characters.';
-        if (f.remarks && f.remarks.length > 255) errs.remarks = 'Remarks must be at most 255 characters.';
-        if (f.status == null || !Number.isInteger(f.status)) errs.status = 'Status is required and must be an integer.';
         return errs;
     }
 
@@ -172,18 +148,6 @@ export default function AddNewContractModalComponent({ onCreate }: Props) {
                             <TextField label="Title" name="title" value={form.title} onChange={handleChange} fullWidth required inputProps={{ maxLength: 255 }} error={!!errors.title} helperText={errors.title} size="small" />
 
                             <TextField label="Description" name="description" value={form.description} onChange={handleChange} fullWidth multiline minRows={2} inputProps={{ maxLength: 1000 }} error={!!errors.description} helperText={errors.description} size="small" />
-                            <TextField
-                                label="Program Amount"
-                                name="program_ammount"
-                                value={form.program_ammount}
-                                onChange={handleChange}
-                                fullWidth
-                                InputProps={{
-                                    inputComponent: NumberFormatCustom as any,
-                                    startAdornment: <InputAdornment position="start">₱</InputAdornment>,
-                                }}
-                                size="small"
-                            />
 
                             <TextField
                                 label="Approved Budget"
@@ -201,29 +165,37 @@ export default function AddNewContractModalComponent({ onCreate }: Props) {
                                 size="small"
                             />
 
-                            <TextField
-                                label="Contract Cost"
-                                name="contract_cost"
-                                value={form.contract_cost}
-                                onChange={handleChange}
-                                fullWidth
-                                InputProps={{
-                                    inputComponent: NumberFormatCustom as any,
-                                    startAdornment: <InputAdornment position="start">₱</InputAdornment>,
-                                }}
-                                size="small"
-                            />
 
-                            <TextField label="Contractor" name="contractor" value={form.contractor} onChange={handleChange} fullWidth inputProps={{ maxLength: 100 }} error={!!errors.contractor} helperText={errors.contractor} size="small" />
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DateTimePicker
-                                    label="Pre-bid Date"
-                                    value={preBidDate || (form.pre_bid_date ? dayjs(form.pre_bid_date) : null)}
-                                    onChange={handlePreBidDateChange}
-                                    renderInput={(params) => <TextField {...params} fullWidth size="small" />}
-                                    ampm
-                                />
+                                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                                    <Box sx={{ flex: '0 0 25%', display: 'flex', alignItems: 'center' }}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={!!form.pre_bid_none}
+                                                    onChange={(e) => {
+                                                        const checked = e.target.checked;
+                                                        setForm((f) => ({ ...f, pre_bid_none: checked, pre_bid_date: checked ? '' : f.pre_bid_date } as any));
+                                                        if (checked) setPreBidDate(null);
+                                                    }}
+                                                    name="pre_bid_none"
+                                                />
+                                            }
+                                            label="None"
+                                        />
+                                    </Box>
 
+                                    <Box sx={{ flex: '0 0 75%' }}>
+                                        <DateTimePicker
+                                            label="Pre-bid Date"
+                                            value={preBidDate || (form.pre_bid_date ? dayjs(form.pre_bid_date) : null)}
+                                            onChange={handlePreBidDateChange}
+                                            renderInput={(params) => <TextField {...params} fullWidth size="small" />}
+                                            ampm
+                                            disabled={!!form.pre_bid_none}
+                                        />
+                                    </Box>
+                                </Box>
                                 <DateTimePicker
                                     label="Opening of Bids Date"
                                     value={openingOfBidsDate || (form.opening_of_bids_date ? dayjs(form.opening_of_bids_date) : null)}
@@ -235,18 +207,7 @@ export default function AddNewContractModalComponent({ onCreate }: Props) {
                             <TextField label="Start of Posting Date" name="start_of_posting_date" value={form.start_of_posting_date} onChange={handleChange} fullWidth type="date" InputLabelProps={{ shrink: true }} size="small" />
 
                             <TextField label="End of Posting Date" name="end_of_posting_date" value={form.end_of_posting_date} onChange={handleChange} fullWidth type="date" InputLabelProps={{ shrink: true }} size="small" />
-                            <TextField label="Contract Start Date" name="contract_start_date" value={form.contract_start_date} onChange={handleChange} fullWidth type="date" InputLabelProps={{ shrink: true }} size="small" />
 
-                            <TextField label="Contract End Date" name="contract_end_date" value={form.contract_end_date} onChange={handleChange} fullWidth type="date" InputLabelProps={{ shrink: true }} size="small" />
-                            <TextField label="Completion Date" name="completion_date" value={form.completion_date} onChange={handleChange} fullWidth type="date" InputLabelProps={{ shrink: true }} size="small" />
-
-                            <TextField label="Project Engineer" name="project_engineer" value={form.project_engineer} onChange={handleChange} fullWidth inputProps={{ maxLength: 100 }} error={!!errors.project_engineer} helperText={errors.project_engineer} size="small" />
-                            <TextField label="Project Inspector" name="project_inspector" value={form.project_inspector} onChange={handleChange} fullWidth inputProps={{ maxLength: 100 }} error={!!errors.project_inspector} helperText={errors.project_inspector} size="small" />
-
-                            <TextField label="Remarks" name="remarks" value={form.remarks} onChange={handleChange} fullWidth inputProps={{ maxLength: 255 }} error={!!errors.remarks} helperText={errors.remarks} size="small" />
-                            <TextField label="Status" name="status" value={String(form.status)} onChange={(e) => setForm((f) => ({ ...f, status: Number(e.target.value) }))} fullWidth type="number" inputProps={{ min: 0, max: 9, step: 1 }} error={!!errors.status} helperText={errors.status} size="small" />
-
-                            <FormControlLabel control={<Checkbox checked={form.re_advertised} onChange={(e) => setForm((f) => ({ ...f, re_advertised: e.target.checked }))} name="re_advertised" />} label="Re-advertised" />
                         </Box>
                     </DialogContent>
                     <DialogActions>
